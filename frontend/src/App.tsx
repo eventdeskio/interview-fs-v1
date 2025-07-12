@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { Button } from 'react-daisyui';
+import { useState } from "react";
+import { Button } from "react-daisyui";
+import LoginPage from "./pages/Login";
 
 function App() {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const fetchMessage = async () => {
-    const res = await fetch('/api/message');
+    const res = await fetch("/api/message");
     const text = await res.text();
     setMessage(text);
   };
@@ -16,9 +17,9 @@ function App() {
         Get Welcome Message
       </Button>
       {message && <div className="text-lg font-bold">{message}</div>}
+      <LoginPage />
     </div>
   );
 }
 
 export default App;
-
