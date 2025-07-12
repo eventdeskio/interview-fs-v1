@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Button } from 'react-daisyui';
+import React, { useState } from "react";
+import { Button } from "react-daisyui";
 
 function App() {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const fetchMessage = async () => {
-    const res = await fetch('/api/message');
+    const res = await fetch("/api/message");
     const text = await res.text();
     setMessage(text);
   };
@@ -21,4 +21,3 @@ function App() {
 }
 
 export default App;
-
