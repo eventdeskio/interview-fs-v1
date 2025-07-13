@@ -10,7 +10,7 @@ const login = async (credentials: any) => {
   return response.json();
 };
 
-const action = async (_, formData: any) => {
+const action = async (_: any, formData: any) => {
   try {
     const jwtToken = await login({
       username: formData.get("username"),
