@@ -13,10 +13,7 @@ function App() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-      <Button color="primary" onClick={fetchMessage}>
-        Get Welcome Message
-      </Button>
-      {message && <div className="text-lg font-bold">{message}</div>}
+      <div className="text-lg font-bold">{message}</div>
       <LoginPage />
     </div>
   );

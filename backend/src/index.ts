@@ -1,26 +1,22 @@
 import express from "express";
 // const jwt = require('jsonwebtoken');
 import jwt from "jsonwebtoken"
+import cors from "cors"
 
 const app = express();
 app.use(express.json())
+app.use(cors()); 
+
 const PORT = 5000;
 
 const USER_NAME = "uname";
 const PASSWORD = "pwd";
 
-const genToken = () => {
-  // return uuid.stringify();
-  "jwt";
-};
-
 app.post("/api/login", (req, res) => {
   const reqBody = req.body;
-
-
   
   console.log(req.body)
-  if (reqBody.userName === USER_NAME && reqBody.password === PASSWORD) {
+  if (reqBody.username === USER_NAME && reqBody.password === PASSWORD) {
     const user = {
       id: 1,
       username: USER_NAME,

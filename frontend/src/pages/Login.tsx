@@ -1,53 +1,69 @@
-import { useState } from "react";
+import { useActionState } from "react";
 import { Button, Card, Input } from "react-daisyui";
 
-type credentials = {
-  userName: string;
-  password: string;
+const login = async (credentials: any) => {
+  const response = await fetch("http://localhost:5000/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+  return response.json();
 };
 
-const LoginPage = () => {
-  const onLogin = () => {
-    fetch('http://localhost:5000/api/login', [])
-  };
+const action = async (_, formData: any) => {
+  try {
+    const jwtToken = await login({
+      username: formData.get("username"),
+      password: formData.get("password"),
+    });
 
-  const {credentials, setCredentials} = useState();
-
-  const onChangeUserName = (value: any)=>{
-    setCredentials({
-      ...credentials,
-      userName: value
-    })
+    return {
+      message: "Successfully Logged In :)",
+      payload: jwtToken,
+    };
+  } catch {
+    return { message: "Not able to login :(", payload: null };
   }
+};
 
-  const onChangePassword = (value: any)=>{
-    setCredentials({
-      ...credentials,
-      password: value
-    })
-  }
+export default function Login() {
+  const [actionState, formAction, isPending] = useActionState(action, null);
 
   return (
-    <div className="">
-      <Card>
-        <Card.Body>
-          <Card.Title tag="h2">Login</Card.Title>
-          <p>Please provide your credentials</p>
-          <div className="flex w-full component-preview p-4 items-center justify-center gap-2 font-sans">
-            <Input value={credentials.username} onChange={onChangeUserName}/>
+    <Card>
+      <Card.Body>
+        <Card.Title tag="h2">Login</Card.Title>
+        <form action={formAction}>
+          <div className="flex flex-col w-full component-preview p-4  gap-2 font-sans">
+              <label>Username</label>
+            <Input
+              type="text"
+              name="username"
+              placeholder="Username"
+              disabled={isPending}
+            />
           </div>
-          <div className="flex w-full component-preview p-4 items-center justify-center gap-2 font-sans">
-            <Input  value={credentials.password} onChange={onChangePassword}/>
+
+          <div className="flex flex-col w-full component-preview p-4 gap-2 font-sans">
+            <label>Password</label>
+            <Input
+              type="text"
+              name="password"
+              placeholder="Password"
+              disabled={isPending}
+            />
           </div>
+
           <Card.Actions className="justify-end">
-            <Button color="primary" onClick={onLogin}>
-              Login
+            <Button type="submit" color="primary" disabled={isPending} >
+              {isPending ? "Submitting..." : "Login"}
             </Button>
           </Card.Actions>
-        </Card.Body>
-      </Card>
-    </div>
+          <div className="todo-details">
+            <h4>{actionState?.message}</h4>
+          </div>
+        </form>
+      </Card.Body>
+    </Card>
   );
-};
-
-export default LoginPage;
+}
