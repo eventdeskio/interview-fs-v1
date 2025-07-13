@@ -2,7 +2,7 @@ import { useActionState } from "react";
 import { Button, Card, Input } from "react-daisyui";
 
 const login = async (credentials: any) => {
-  const response = await fetch("http://localhost:5000/api/login", {
+  const response = await fetch("/api/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),
