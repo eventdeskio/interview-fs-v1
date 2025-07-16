@@ -1,5 +1,6 @@
 import express from 'express';
-import { authMiddleware, loginController } from './controllers/authController.js';
+import { loginController, protectedController } from './controllers/authController.js';
+import { authMiddleware } from './middlewares/authMiddleware.js';
 
 const app = express();
 const PORT = 5000;
@@ -13,14 +14,7 @@ app.get('/api/message', (_req, res) => {
 
 app.post('/api/login', loginController);
 
-
-app.get('/api/protected', authMiddleware, (req, res)=>{
-  const username = req.body.username;
-
-  if(username !== USERNAME) return res.status(401).json({message: "User not authorized"});
-
-  return res.status(200).json({message:"User is authorized and this is a protected route"})
-})
+app.get('/api/protected', authMiddleware, protectedController)
 
 app.listen(PORT, () => {
   console.log(`Backend running at http://localhost:${PORT}`);

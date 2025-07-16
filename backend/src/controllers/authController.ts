@@ -1,41 +1,39 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
-const USERNAME= "123456";
-const PASS= "abcdef";
-const JWT_KEY = "secret";
-export const loginController = async (req: Request, res: Response)=>{
+dotenv.config();
 
-    console.log(req.body)
-    const { username, password } = req.body;
+const USERNAME = "123456";
+const PASS = "abcdef";
+const JWT_SECRET = process.env.JWT_SECRET || "secret";
+export const loginController = async (req: Request, res: Response) => {
+    try {
+        //console.log(req.body)
+        const { username, password } = req.body;
 
-    if(!username || !password) return res.status(404).json({message:"Username or password not found"});
+        if (!username || !password) return res.status(404).json({ message: "Username or password not found" });
 
-    if(username!==USERNAME || password!==PASS){
-        return res.status(401).json({message:"User is unauthorized"});
+        if (username !== USERNAME || password !== PASS) {
+            return res.status(401).json({ message: "Invalid Credentials" });
+        }
+
+        const token = jwt.sign({ username }, JWT_SECRET);
+
+        return res.status(201).json({ message: "Logged In successfully", token, username });
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" })
     }
 
-    const token = jwt.sign({username}, JWT_KEY);
-
-    return res.status(201).json({message: "Logged In successfully", token});
-
 }
 
-export const authMiddleware = async (req: Request, res:Response , next:NextFunction)=>{
+export const protectedController = async (req: Request, res: Response) => {
+    const username = req.body.username;
 
-    const header = req.headers['authorization'];
-    
-    const token = header?.split(' ')[1];
-    console.log(token);
+    if (username !== USERNAME) return res.status(401).json({ message: "User not authorized" });
 
-    if(!token) return res.status(401).json({messsage:"Unauthorized"});
-
-    const decode = jwt.verify(token, JWT_KEY) as { username: string}
-    console.log(decode);
-
-    req.body.username = decode.username;
-
-    next();
-    
+    return res.status(200).json({ message: "User is authorized and this is a protected route" })
 }
+
+
 
